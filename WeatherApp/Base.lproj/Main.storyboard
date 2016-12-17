@@ -4,7 +4,6 @@
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
-        <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -146,17 +145,29 @@
                             <activityIndicatorView hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="whiteLarge" translatesAutoresizingMaskIntoConstraints="NO" id="lv3-9X-Jut">
                                 <rect key="frame" x="169" y="315" width="37" height="37"/>
                             </activityIndicatorView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Weather App By Manoj Wagh" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="M9o-Pl-cbe">
+                                <rect key="frame" x="20" y="639" width="339" height="20"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="20" id="i83-h0-GMn"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="10"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                         </subviews>
                         <color key="backgroundColor" red="0.71954327821731567" green="0.31329041719436646" blue="0.77299559116363525" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstItem="24D-WH-kNk" firstAttribute="top" secondItem="9hp-ZK-Cgh" secondAttribute="bottom" constant="20" id="08H-3K-ZeR"/>
                             <constraint firstAttribute="leadingMargin" secondItem="9hp-ZK-Cgh" secondAttribute="leading" id="4HC-f8-bUE"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="M9o-Pl-cbe" secondAttribute="trailing" id="9dN-RL-3Ph"/>
                             <constraint firstAttribute="trailingMargin" secondItem="PtG-xb-2Rq" secondAttribute="trailing" id="Cvb-Lo-EyB"/>
                             <constraint firstItem="lv3-9X-Jut" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="JPf-aN-bEd"/>
                             <constraint firstItem="lv3-9X-Jut" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="KcE-z7-aAU"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="M9o-Pl-cbe" secondAttribute="bottom" constant="8" id="S9C-Bd-Vfo"/>
                             <constraint firstAttribute="trailingMargin" secondItem="Y3P-Gp-IhV" secondAttribute="trailing" id="Xcr-0W-2Jc"/>
                             <constraint firstItem="24D-WH-kNk" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="YOX-31-XH3"/>
                             <constraint firstItem="PtG-xb-2Rq" firstAttribute="top" secondItem="24D-WH-kNk" secondAttribute="bottom" constant="30" id="bjg-4K-V74"/>
+                            <constraint firstItem="M9o-Pl-cbe" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="4" id="dvS-Tv-Nq3"/>
                             <constraint firstItem="Y3P-Gp-IhV" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-5" id="fnq-KP-DFy"/>
                             <constraint firstItem="Y3P-Gp-IhV" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="20" id="i3h-TZ-3cb"/>
                             <constraint firstAttribute="leadingMargin" secondItem="PtG-xb-2Rq" secondAttribute="leading" id="qXV-Hf-72e"/>
