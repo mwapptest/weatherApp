@@ -1,5 +1,5 @@
 //
-//  ViewController.swift
+//  WeatherDisplayViewController.swift
 //  WeatherApp
 //
 //  Created by Wagh, Manoj on 12/16/16.
@@ -8,7 +8,8 @@
 
 import UIKit
 
-class ViewController: UIViewController {
+class WeatherDisplayViewController: UIViewController
+{
 
     @IBOutlet weak var cityStateNameTextField: UITextField!
     
