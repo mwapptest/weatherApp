@@ -5,132 +5,211 @@
 //  Created by Wagh, Manoj on 12/16/16.
 //  Copyright © 2016 Wagh, Manoj. All rights reserved.
 //
+//  Weather Display View controller
+//  This class is responsible to display/hide weather card operation,
+//  Make web request call for weather data and weather icon
+//  Show error incase web request fails or user does not enter proper input
+//  & stop or start animation for activity indicator
 
 import UIKit
 
-class WeatherDisplayViewController: UIViewController
+class WeatherDisplayViewController: UIViewController, UITextFieldDelegate
 {
-
+    // UI elements
     @IBOutlet weak var cityStateNameTextField: UITextField!
     
-    @IBOutlet weak var minMaxTemprature: UILabel!
-    
-    @IBOutlet weak var descriptionLbl: UILabel!
-    
-    @IBOutlet weak var temprature: UILabel!
-    
-    @IBOutlet weak var iconImage: UIImageView!
+    @IBOutlet weak var weatherCardview : WeatehrCardView!
     
     @IBOutlet weak var acitivityIndicator: UIActivityIndicatorView!
     
+    // Network handler to make request for web service calls
     private let netWorkHandler = NetWorkHandler()
-    
     
     override func viewDidLoad()
     {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
-        self.acitivityIndicator.isHidden = true
-        self.acitivityIndicator.stopAnimating()
-        self.hideWeatherUI(true)
+        self.stopActivityIndicator()
         
+        self.weatherCardview.hideWeatherUI(true)
+        
+        if let lastCity = UserDefaults.standard.value(forKey: "lastcity") as? String
+        {
+            self.cityStateNameTextField.text = lastCity
+        }
     }
     
+    // Show the weather data from city/state name
     @IBAction func submitBtnPressed(_ sender: Any)
     {
         let cityName = self.cityStateNameTextField.text
         
+        // show alert if city/state name is empty
         if cityName == ""
         {
-            // show alert
+            self.showCityNameAlert(errorMsg: nil)
+            self.cityStateNameTextField.resignFirstResponder()
             return
         }
         
-        self.acitivityIndicator.isHidden = false
+        self.showActivityIndicator()
         
-        self.acitivityIndicator.startAnimating()
-        
+        // Make web service request to get the city weather in background
         self.netWorkHandler.fetchCityWeather(cityname: cityName)
         {
             weatherResponse, error in
             
+            // Come back to main thread to update UI
             DispatchQueue.main.async
             {
-                self.acitivityIndicator.isHidden = true
-                self.acitivityIndicator.stopAnimating()
+                self.cityStateNameTextField.resignFirstResponder()
+                
+                self.stopActivityIndicator()
 
+                // in case fail from web call
                 if error != nil
                 {
-                    self.hideWeatherUI(true)
+                    self.weatherCardview.hideWeatherUI(true)
+                    self.showWeatherError()
                 }
-                print("dictionary \(weatherResponse)")
                 
+                // success from web call, Display weather data and start async icon image download
                 if let weatherResponseData = weatherResponse
                 {
-                    self.displayWeatherDataUI(weatherData: weatherResponseData)
+                    if (weatherResponseData.errorCode != 200)
+                    {
+                       if (weatherResponseData.errorMessage != "")
+                       {
+                            if (weatherResponseData.errorMessage != nil)
+                            {
+                                self.showCityNameAlert(errorMsg: weatherResponseData.errorMessage)
+                            }
+                            else
+                            {
+                                self.showWeatherError()
+                            }
+                        }
+                    }
+                    else
+                    {
+                        self.weatherCardview.displayWeatherDataUI(weatherData: weatherResponseData)
+                        
+                        // save last city search for next use
+                        if let lastCity = weatherResponseData.cityName
+                        {
+                            UserDefaults.standard.set(lastCity, forKey: "lastcity")
+                        }
+                        
+                        // Start to download icon once we received success in weather data
+                        self.downloadImage(weatherData: weatherResponseData)
+                    }
                 }
             }
         }
     }
     
-    private func displayWeatherDataUI(weatherData: WeatherDataModel)
+    // Download weather icon image asynchronosly (in background thread)
+    private func downloadImage(weatherData : WeatherDataModel)
     {
-        self.hideWeatherUI(false)
-        
-        self.descriptionLbl.text = weatherData.description
-        
-        self.temprature.text = String(format:"%0.0fº",self.tempratureInC(weatherData.temperature!))
-        
-        self.minMaxTemprature.text = String(format:"Min / Max:   %.1fº / %.1fº",self.tempratureInC(weatherData.maxTemp!),self.tempratureInC(weatherData.minTemp!))
-        
-        netWorkHandler.downloadImage(imageName: weatherData.iconUrl)
+        self.netWorkHandler.downloadImage(imageName: weatherData.iconUrl)
         {
             image in
             
-            if image != nil
+            // Come back to main thread
+            DispatchQueue.main.async
             {
-                DispatchQueue.main.async
-                {
-                    self.iconImage.isHidden = false
-                    self.iconImage.image = image
-                }
-            }
-            else
-            {
-                self.iconImage.isHidden = true
+                // display download icon here
+                self.weatherCardview.displayDownloadedIcon(image: image)
             }
         }
     }
     
-    private func hideWeatherUI(_ isRequiredToHide: Bool)
+    // Pop up alert if user does not enter city name and pressed submit button
+    private func showCityNameAlert(errorMsg : String?)
     {
-        if isRequiredToHide
+        let title = "City Name Missing"
+        
+        var message = "Please provide proper City name"
+        
+        
+        if errorMsg != nil
         {
-            self.cityStateNameTextField.text = ""
+            message = errorMsg!
         }
         
-        self.iconImage.isHidden = isRequiredToHide
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
         
-        self.descriptionLbl.isHidden = isRequiredToHide
+        let dismissActionTitle = "Dismiss"
         
-        self.minMaxTemprature.isHidden = isRequiredToHide
+        alertController.addAction(UIAlertAction(title: dismissActionTitle, style: UIAlertActionStyle.default, handler:
+        {
+                (alert: UIAlertAction!) in
+            
+            self.cityStateNameTextField.resignFirstResponder()
+            self.cityStateNameTextField.text = ""
+        }))
         
-        self.temprature.isHidden = isRequiredToHide
+    
+        
+        self.present(alertController, animated: true, completion: nil)
     }
-
+    
+    // Display alert if weather web service get any error, here I am showing generic error
+    private func showWeatherError()
+    {
+        let title = "Weather Report Error"
+        
+        let message = "Please try again after 10 mins"
+        
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: UIAlertControllerStyle.alert)
+        
+        let dismissActionTitle = "Dismiss"
+        
+        alertController.addAction(UIAlertAction(title: dismissActionTitle, style: UIAlertActionStyle.default, handler:
+            {
+                (alert: UIAlertAction!) in
+                
+                self.cityStateNameTextField.resignFirstResponder()
+                self.cityStateNameTextField.text = ""
+        }))
+        
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    // activity indicator ui stop animation and hide it
+    private func stopActivityIndicator()
+    {
+        self.acitivityIndicator.isHidden = true
+        self.acitivityIndicator.stopAnimating()
+    }
+    
+    // activity indicator ui start animation and show it
+    private func showActivityIndicator()
+    {
+        self.acitivityIndicator.isHidden = true
+        self.acitivityIndicator.startAnimating()
+    }
+    
+//    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
+//        
+//        let set = NSCharacterSet(charactersIn: "ABCDEFGHIJKLMONPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz").inverted
+//        
+//        return string.rangeOfCharacter(from: set) == nil
+//        
+//    }
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool
+    {
+        let set = NSCharacterSet(charactersIn: "ABCDEFGHIJKLMONPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz").inverted
+        
+        return string.rangeOfCharacter(from: set) == nil
+    }
+    
+    
     override func didReceiveMemoryWarning()
     {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
-    }
-    
-    // utils
-    
-    private func tempratureInC (_ tempratureValue: Double?) -> Double
-    {
-        let temp = (10 * (tempratureValue! - 273.15)) / 10
-        
-        return temp
     }
 }
 
