@@ -1,4 +1,4 @@
-# weatherApp
+# Weather App
 
 As per user's input for city name, App will fetch data from http://openweathermap.org/  to display city latest weather data.
 
