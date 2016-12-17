@@ -17,27 +17,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         
-//        let str = "{\"coord\": {\"lon\": -0.13,\"lat\": 51.51},\"weather\": [{\"id\":721,\"main\": \"Haze\",\"description\": \"haze\",\"icon\": \"50n\"},{\"id\":741,\"main\": \"Fog\",\"description\": \"fog\",\"icon\": \"50n\"},{\"id\":701,\"main\": \"Mist\",\"description\": \"mist\",\"icon\": \"50n\"}],\"base\":\"stations\",\"main\": { \"temp\": 278.15,\"pressure\": 1035,\"humidity\": 93,\"temp_min\": 275.15,\"temp_max\": 280.15},\"visibility\": 2500,\"wind\": {\"speed\": 0.5},\"clouds\": {\"all\": 88},\"dt\": 1481953800,\"sys\":{ \"type\": 1,\"id\": 5091,\"message\": 0.0067,\"country\": \"GB\",\"sunrise\": 1481961704,\"sunset\": 1481989929},\"id\": 2643743,\"name\": \"London\",\"cod\": 200}"
-        
-//        let dict = convertToDictionary(text: str)
-        
-//        print("\(dict)")
-        
-//        let we = WeatherDataModel.init(dictionary: dict!)
+
         
         return true
     }
     
-    func convertToDictionary(text: String) -> NSDictionary? {
-        if let data = text.data(using: .utf8) {
-            do {
-                return try JSONSerialization.jsonObject(with: data, options: []) as? NSDictionary
-            } catch {
-                print(error.localizedDescription)
-            }
-        }
-        return nil
-    }
 
 
     func applicationWillResignActive(_ application: UIApplication) {
