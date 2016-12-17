@@ -190,14 +190,8 @@ class WeatherDisplayViewController: UIViewController, UITextFieldDelegate
         self.acitivityIndicator.startAnimating()
     }
     
-//    func textField(textField: UITextField, shouldChangeCharactersInRange range: NSRange, replacementString string: String) -> Bool {
-//        
-//        let set = NSCharacterSet(charactersIn: "ABCDEFGHIJKLMONPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz").inverted
-//        
-//        return string.rangeOfCharacter(from: set) == nil
-//        
-//    }
     
+    // only accept alphabates, city name textfield avoid numeric entry
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool
     {
         let set = NSCharacterSet(charactersIn: "ABCDEFGHIJKLMONPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz").inverted
