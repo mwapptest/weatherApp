@@ -194,7 +194,7 @@ class WeatherDisplayViewController: UIViewController, UITextFieldDelegate
     // only accept alphabates, city name textfield avoid numeric entry
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool
     {
-        let set = NSCharacterSet(charactersIn: "ABCDEFGHIJKLMONPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz").inverted
+        let set = NSCharacterSet(charactersIn: "ABCDEFGHIJKLMONPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz ").inverted
         
         return string.rangeOfCharacter(from: set) == nil
     }
